@@ -11,6 +11,7 @@ using Nez.BitmapFonts;
 using Nez.Analysis;
 using Nez.Textures;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Nez.ImGui")]
@@ -146,7 +147,8 @@ namespace Nez
 				PreferredBackBufferWidth = width,
 				PreferredBackBufferHeight = height,
 				IsFullScreen = isFullScreen,
-				SynchronizeWithVerticalRetrace = true
+				SynchronizeWithVerticalRetrace = true,
+				PreferHalfPixelOffset = RuntimeInformation.FrameworkDescription.Contains(".NET Core")|| RuntimeInformation.FrameworkDescription.Contains(".NET 5.0.0"),
 			};
 			graphicsManager.DeviceReset += OnGraphicsDeviceReset;
 			graphicsManager.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
@@ -213,8 +215,13 @@ namespace Nez
 
 			// prep the default Graphics system
 			GraphicsDevice = base.GraphicsDevice;
-			var font = Content.Load<BitmapFont>("nez://Nez.Content.NezDefaultBMFont.xnb");
+			var font = GetDefaultFont();
 			Graphics.Instance = new Graphics(font);
+		}
+
+		protected virtual BitmapFont GetDefaultFont()
+		{
+			return Content.Load<BitmapFont>("nez://Nez.Content.NezDefaultBMFont.xnb");
 		}
 
 		protected override void Update(GameTime gameTime)

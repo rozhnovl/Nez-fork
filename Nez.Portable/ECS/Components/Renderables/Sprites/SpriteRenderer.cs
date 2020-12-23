@@ -97,7 +97,7 @@ namespace Nez.Sprites
 
 		public SpriteRenderer(Texture2D texture) : this(new Sprite(texture))
 		{ }
-
+		
 		public SpriteRenderer(Sprite sprite) => SetSprite(sprite);
 
 		#region fluent setters

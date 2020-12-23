@@ -145,6 +145,7 @@ namespace Nez
 		{
 			batcher.DrawString(_font, _text, Entity.Transform.Position + _localOffset, Color,
 				Entity.Transform.Rotation, Origin, Entity.Transform.Scale, SpriteEffects, LayerDepth);
+			batcher.DrawLine(Entity.Transform.Position + _localOffset, Entity.Transform.Position, Color.Red, 50);
 		}
 	}
 }

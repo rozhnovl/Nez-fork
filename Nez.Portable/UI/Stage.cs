@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework.Input;
 
 
@@ -251,6 +253,13 @@ namespace Nez.UI
 			if (over != null)
 				HandleMouseWheel(over);
 
+			if (over == null)
+			{
+				var listener = Core.Scene.Entities.FindComponentsOfType<MouseHitRenderableComponent>().Select(e => e.Hit(inputPos)).FirstOrDefault(h => h != null);
+				if (listener != null && inputPressed)
+					UpdateInputDown(inputPos, listener);
+			}
+
 			if (inputPressed)
 			{
 				UpdateInputDown(inputPos, over);
@@ -267,6 +276,7 @@ namespace Nez.UI
 			}
 
 			lastOver = over;
+
 		}
 
 
@@ -282,15 +292,17 @@ namespace Nez.UI
 				SetKeyboardFocus(null);
 
 			// if we are over an element and the left button was pressed we notify our listener
-			if (over is IInputListener)
+			if (over is IInputListener listener)
 			{
-				var elementLocal = over.StageToLocalCoordinates(inputPos);
-				var listener = over as IInputListener;
-
-				// add the listener to be notified for all onMouseDown and onMouseUp events
-				if (listener.OnMousePressed(elementLocal))
-					_inputFocusListeners.Add(over);
+				UpdateInputDown(over.StageToLocalCoordinates(inputPos), listener);
 			}
+		}
+
+		void UpdateInputDown(Vector2 elementLocal, IInputListener listener)
+		{
+			// add the listener to be notified for all onMouseDown and onMouseUp events
+			if (listener.OnMousePressed(elementLocal) && listener is Element element)
+				_inputFocusListeners.Add(element);
 		}
 
 
@@ -339,8 +351,7 @@ namespace Nez.UI
 				return;
 
 			// check the deepest Element first then check all of its parents that are IInputListeners
-			var listener = mouseOverElement as IInputListener;
-			if (listener != null && listener.OnMouseScrolled(Input.MouseWheelDelta))
+			if (mouseOverElement is IInputListener listener && listener.OnMouseScrolled(Input.MouseWheelDelta))
 				return;
 
 			while (mouseOverElement.parent != null)
@@ -819,6 +830,31 @@ namespace Nez.UI
 				else if (elements[i] is Group)
 					FindAllElementsOfType(((Group) elements[i]).children, foundElements);
 			}
+		}
+	}
+
+	public abstract class MouseHitRenderableComponent:Component
+	{
+		private RenderableComponent rc;
+
+		protected MouseHitRenderableComponent(IInputListener inputListener)
+		{
+			InputListener = inputListener;
+		}
+
+		public override void OnEnabled()
+		{
+			base.OnEnabled();
+			rc = Entity.GetComponent<RenderableComponent>();
+		}
+
+		public IInputListener InputListener { get; set; }
+
+		public IInputListener Hit(Vector2 position)
+		{
+			if (rc?.Bounds.Contains(position) ?? false)
+				return InputListener;
+			return null;
 		}
 	}
 }

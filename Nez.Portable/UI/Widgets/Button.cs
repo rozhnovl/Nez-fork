@@ -121,7 +121,7 @@ namespace Nez.UI
 			if (DistanceOutsideBoundsToPoint(mousePos) > ButtonBoundaryThreshold)
 			{
 				_mouseDown = _mouseOver = false;
-				GetStage().RemoveInputFocusListener(this);
+				GetStage()?.RemoveInputFocusListener(this);
 			}
 		}
 
