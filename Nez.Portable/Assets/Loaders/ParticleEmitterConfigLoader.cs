@@ -90,7 +90,8 @@ namespace Nez.ParticleDesigner
 						using (var mem = new MemoryStream())
 						{
 							stream.CopyTo(mem);
-
+							throw new NotImplementedException();
+							/*
 							var bitmap = System.Drawing.Image.FromStream(mem) as System.Drawing.Bitmap;
 							var colors = new Color[bitmap.Width * bitmap.Height];
 
@@ -106,6 +107,7 @@ namespace Nez.ParticleDesigner
 							var texture = new Texture2D(Core.GraphicsDevice, bitmap.Width, bitmap.Height);
 							texture.SetData(colors);
 							config.Sprite = new Textures.Sprite(texture);
+							*/
 						}
 					}
 				}

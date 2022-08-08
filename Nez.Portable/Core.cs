@@ -148,7 +148,8 @@ namespace Nez
 				PreferredBackBufferHeight = height,
 				IsFullScreen = isFullScreen,
 				SynchronizeWithVerticalRetrace = true,
-				PreferHalfPixelOffset = RuntimeInformation.FrameworkDescription.Contains(".NET Core")|| RuntimeInformation.FrameworkDescription.Contains(".NET 5.0.0"),
+
+				//TODO check if required PreferHalfPixelOffset = RuntimeInformation.FrameworkDescription.Contains(".NET Core")|| RuntimeInformation.FrameworkDescription.Contains(".NET 5.0.0"),
 			};
 			graphicsManager.DeviceReset += OnGraphicsDeviceReset;
 			graphicsManager.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;

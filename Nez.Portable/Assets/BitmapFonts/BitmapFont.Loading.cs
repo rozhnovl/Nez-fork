@@ -224,7 +224,7 @@ namespace Nez.BitmapFonts
 			var pageData = new SortedDictionary<int, Page>();
 			var kerningDictionary = new Dictionary<Kerning, int>();
 			var charDictionary = new Dictionary<char, Character>();
-
+			
 			document.Load(reader);
 			var root = document.DocumentElement;
 
