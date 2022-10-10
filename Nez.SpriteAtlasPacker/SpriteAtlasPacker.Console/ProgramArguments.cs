@@ -31,6 +31,9 @@ namespace Nez.Tools.Atlases.Console
 		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Ensures output is square.")]
 		public bool sqr;
 
+		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Input map file name with Origins to use (you can use existing Output map file to keep origins)")]
+		public string originsMap;
+
 		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Origin X for the images", DefaultValue = Constants.DefaultOrigin)]
 		public float originX = Constants.DefaultOrigin;
 
@@ -49,6 +52,15 @@ namespace Nez.Tools.Atlases.Console
 		[Argument( ArgumentType.AtMostOnce, ShortName = "", HelpText = "Output LOVE2D lua file" )]
 		public bool lua;
 
+		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "Write images relative paths instead of just names when building the maps.")]
+		public bool writePaths;
+
+		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "The map will use LF (\\n) for line endings instead of CRLF (\\r\\n).")]
+		public bool lf;
+
+		[Argument(ArgumentType.AtMostOnce, ShortName = "", HelpText = "The origins of the images won't be written in the map.")]
+		public bool noOrigins;
+
 		private ProgramArguments() { }
 
 		public static ProgramArguments Parse(params string[] args)
@@ -65,6 +77,7 @@ namespace Nez.Tools.Atlases.Console
 			{
 				AtlasOutputFile = image,
 				MapOutputFile = map,
+				MapInputFile = originsMap,
 				AtlasMaxWidth = mw,
 				AtlasMaxHeight = mh,
 				Padding = pad,
@@ -75,7 +88,10 @@ namespace Nez.Tools.Atlases.Console
 				OriginY = originY,
 				FrameRate = fps,
 				InputPaths = input,
-				OutputLua = lua
+				OutputLua = lua,
+				WritePaths = writePaths,
+				LF = lf,
+				NoOrigins = noOrigins
 			};
 		}
 	}

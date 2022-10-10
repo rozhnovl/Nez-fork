@@ -1,6 +1,6 @@
-using System;
 using Microsoft.Xna.Framework;
 using Nez.BitmapFonts;
+using System;
 
 
 namespace Nez.UI
@@ -31,7 +31,7 @@ namespace Nez.UI
 			touchable = Touchable.Enabled;
 			Clip = true;
 
-			titleLabel = new Label(title, new LabelStyle(style.TitleFont, style.TitleFontColor));
+			titleLabel = new Label(title, new LabelStyle(style.TitleFont, style.TitleFontColor, style.TitleFontScaleX, style.TitleFontScaleY));
 			titleLabel.SetEllipsis(true);
 
 			titleTable = new Table();
@@ -61,7 +61,7 @@ namespace Nez.UI
 		{ }
 
 
-		bool IInputListener.OnMousePressed(Vector2 mousePos)
+		bool IInputListener.OnLeftMousePressed(Vector2 mousePos)
 		{
 			float width = GetWidth(), height = GetHeight();
 			edge = 0;
@@ -103,6 +103,10 @@ namespace Nez.UI
 			return true;
 		}
 
+		bool IInputListener.OnRightMousePressed(Vector2 mousePos)
+		{
+			return false;
+		}
 
 		void IInputListener.OnMouseMoved(Vector2 mousePos)
 		{
@@ -186,9 +190,13 @@ namespace Nez.UI
 		}
 
 
-		void IInputListener.OnMouseUp(Vector2 mousePos)
+		void IInputListener.OnLeftMouseUp(Vector2 mousePos)
 		{
 			_dragging = false;
+		}
+		void IInputListener.OnRightMouseUp(Vector2 mousePos)
+		{
+
 		}
 
 
@@ -208,6 +216,8 @@ namespace Nez.UI
 			var labelStyle = titleLabel.GetStyle();
 			labelStyle.Font = style.TitleFont ?? labelStyle.Font;
 			labelStyle.FontColor = style.TitleFontColor;
+			labelStyle.FontScaleX = style.TitleFontScaleX;
+			labelStyle.FontScaleY = style.TitleFontScaleY;
 			titleLabel.SetStyle(labelStyle);
 
 			InvalidateHierarchy();
@@ -355,6 +365,12 @@ namespace Nez.UI
 		public BitmapFont TitleFont;
 
 		/** Optional. */
+		public float TitleFontScaleX = 1f;
+
+		/** Optional. */
+		public float TitleFontScaleY = 1f;
+
+		/** Optional. */
 		public IDrawable Background;
 
 		/** Optional. */
@@ -364,18 +380,30 @@ namespace Nez.UI
 		public IDrawable StageBackground;
 
 
+
+
 		public WindowStyle()
 		{
 			TitleFont = Graphics.Instance.BitmapFont;
 		}
 
 
-		public WindowStyle(BitmapFont titleFont, Color titleFontColor, IDrawable background)
-		{
-			TitleFont = titleFont ?? Graphics.Instance.BitmapFont;
-			Background = background;
-			TitleFontColor = titleFontColor;
-		}
+        public WindowStyle(BitmapFont titleFont, Color titleFontColor, IDrawable background) : this(titleFont, titleFontColor, background, 1f)
+        { }
+
+
+        public WindowStyle(BitmapFont titleFont, Color titleFontColor, IDrawable background, float titleFontScale) : this(titleFont, titleFontColor, background, titleFontScale, titleFontScale)
+        { }
+
+
+        public WindowStyle(BitmapFont titleFont, Color titleFontColor, IDrawable background, float titleFontScaleX, float titleFontScaleY)
+        {
+            TitleFont = titleFont ?? Graphics.Instance.BitmapFont;
+            Background = background;
+            TitleFontColor = titleFontColor;
+            TitleFontScaleX = titleFontScaleX;
+            TitleFontScaleY = titleFontScaleY;
+        }
 
 
 		public WindowStyle Clone()
@@ -385,6 +413,8 @@ namespace Nez.UI
 				Background = Background,
 				TitleFont = TitleFont,
 				TitleFontColor = TitleFontColor,
+				TitleFontScaleX = TitleFontScaleX,
+				TitleFontScaleY = TitleFontScaleY,
 				StageBackground = StageBackground
 			};
 		}

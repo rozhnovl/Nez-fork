@@ -8,7 +8,6 @@ using Nez.Console;
 using Nez.Tweens;
 using Nez.Timers;
 using Nez.BitmapFonts;
-using Nez.Analysis;
 using Nez.Textures;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -122,8 +121,8 @@ namespace Nez
 				if (_instance._scene == null)
 				{
 					_instance._scene = value;
-					_instance._scene.Begin();
 					_instance.OnSceneChanged();
+					_instance._scene.Begin();
 				}
 				else
 				{
@@ -148,8 +147,9 @@ namespace Nez
 				PreferredBackBufferHeight = height,
 				IsFullScreen = isFullScreen,
 				SynchronizeWithVerticalRetrace = true,
-
-				//TODO check if required PreferHalfPixelOffset = RuntimeInformation.FrameworkDescription.Contains(".NET Core")|| RuntimeInformation.FrameworkDescription.Contains(".NET 5.0.0"),
+				#if MONOGAME_38
+				PreferHalfPixelOffset = true
+#endif
 			};
 			graphicsManager.DeviceReset += OnGraphicsDeviceReset;
 			graphicsManager.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
@@ -232,8 +232,6 @@ namespace Nez
 				SuppressDraw();
 				return;
 			}
-
-			StartDebugUpdate();
 
 			// update all our systems and global managers
 			Time.Update((float) gameTime.ElapsedGameTime.TotalSeconds);
@@ -341,19 +339,9 @@ namespace Nez
 		#region Debug Injection
 
 		[Conditional("DEBUG")]
-		void StartDebugUpdate()
-		{
-#if DEBUG
-			TimeRuler.Instance.StartFrame();
-			TimeRuler.Instance.BeginMark("update", Color.Green);
-#endif
-		}
-
-		[Conditional("DEBUG")]
 		void EndDebugUpdate()
 		{
 #if DEBUG
-			TimeRuler.Instance.EndMark("update");
 			DebugConsole.Instance.Update();
 			drawCalls = 0;
 #endif
@@ -363,8 +351,6 @@ namespace Nez
 		void StartDebugDraw(TimeSpan elapsedGameTime)
 		{
 #if DEBUG
-			TimeRuler.Instance.BeginMark("draw", Color.Gold);
-
 			// fps counter
 			_frameCounter++;
 			_frameCounterElapsedTime += elapsedGameTime;
@@ -382,13 +368,7 @@ namespace Nez
 		void EndDebugDraw()
 		{
 #if DEBUG
-			TimeRuler.Instance.EndMark("draw");
 			DebugConsole.Instance.Render();
-
-			// the TimeRuler only needs to render when the DebugConsole is not open
-			if (!DebugConsole.Instance.IsOpen)
-				TimeRuler.Instance.Render();
-
 #if !FNA
 			drawCalls = GraphicsDevice.Metrics.DrawCount;
 #endif

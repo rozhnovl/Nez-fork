@@ -70,6 +70,9 @@ namespace Nez
 
 		#region static variables and constants
 
+		/// if true, the older FNA half-pixel offset will be used when creating the ortho matrix. Autoset to true for FNA.
+		public static bool UseFnaHalfPixelMatrix = false;
+
 		const int MAX_SPRITES = 2048;
 		const int MAX_VERTICES = MAX_SPRITES * 4;
 		const int MAX_INDICES = MAX_SPRITES * 6;
@@ -80,6 +83,10 @@ namespace Nez
 		static readonly short[] _indexData = GenerateIndexArray();
 
 		#endregion
+		
+		#if FNA
+		static Batcher() => UseFnaHalfPixelMatrix = true;
+		#endif
 
 		public Batcher(GraphicsDevice graphicsDevice)
 		{
@@ -993,10 +1000,10 @@ namespace Nez
 			#if FNA
 			fixed (VertexPositionColorTexture4* p = &_vertexInfo[0])
 			{
-				_vertexBuffer.SetDataPointerEXT(0, (IntPtr)p, _numSprites * VertexPositionColorTexture4.RealStride, SetDataOptions.None);
+				_vertexBuffer.SetDataPointerEXT(0, (IntPtr)p, _numSprites * VertexPositionColorTexture4.RealStride, SetDataOptions.Discard);
 			}
 			#else
-			_vertexBuffer.SetData(0, _vertexInfo, 0, _numSprites, VertexPositionColorTexture4.RealStride, SetDataOptions.None);
+			_vertexBuffer.SetData(0, _vertexInfo, 0, _numSprites, VertexPositionColorTexture4.RealStride, SetDataOptions.Discard);
 			#endif
 
 			curTexture = _textureInfo[0];
@@ -1052,13 +1059,16 @@ namespace Nez
 			var viewport = GraphicsDevice.Viewport;
 
 			// inlined CreateOrthographicOffCenter
-#if FNA
-			_projectionMatrix.M11 = (float)( 2.0 / (double) ( viewport.Width / 2 * 2 - 1 ) );
-			_projectionMatrix.M22 = (float)( -2.0 / (double) ( viewport.Height / 2 * 2 - 1 ) );
-#else
-			_projectionMatrix.M11 = (float) (2.0 / (double) viewport.Width);
-			_projectionMatrix.M22 = (float) (-2.0 / (double) viewport.Height);
-#endif
+			if (UseFnaHalfPixelMatrix)
+			{
+				_projectionMatrix.M11 = (float)(2.0 / (double)(viewport.Width / 2 * 2 - 1));
+				_projectionMatrix.M22 = (float)(-2.0 / (double)(viewport.Height / 2 * 2 - 1));
+			}
+			else
+			{
+				_projectionMatrix.M11 = (float)(2.0 / (double)viewport.Width);
+				_projectionMatrix.M22 = (float)(-2.0 / (double)viewport.Height);
+			}
 
 			_projectionMatrix.M41 = -1 - 0.5f * _projectionMatrix.M11;
 			_projectionMatrix.M42 = 1 - 0.5f * _projectionMatrix.M22;
