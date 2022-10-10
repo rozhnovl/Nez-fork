@@ -109,6 +109,7 @@ namespace Nez.PhysicsShapes
 			if (sqrDistance == 0)
 			{
 				result.MinimumTranslationVector = result.Normal * circle.Radius;
+				return true;
 			}
 			else if (sqrDistance <= circle.Radius * circle.Radius)
 			{

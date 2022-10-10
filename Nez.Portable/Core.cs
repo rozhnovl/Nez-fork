@@ -217,6 +217,7 @@ namespace Nez
 			// prep the default Graphics system
 			GraphicsDevice = base.GraphicsDevice;
 			var font = GetDefaultFont();
+
 			Graphics.Instance = new Graphics(font);
 		}
 

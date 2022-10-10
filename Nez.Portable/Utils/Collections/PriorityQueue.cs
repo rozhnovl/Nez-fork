@@ -204,9 +204,9 @@ namespace System.Collections.Generic
 		public T Dequeue()
 		{
 			Insist.IsFalse(_numNodes <= 0, "Cannot call Dequeue() on an empty queue");
-			Insist.IsTrue(IsValidQueue(),
+			/*Insist.IsTrue(IsValidQueue(),
 				"Queue has been corrupted (Did you update a node priority manually instead of calling UpdatePriority()?" +
-				"Or add the same node to two different queues?)");
+				"Or add the same node to two different queues?)");*/
 
 			T returnMe = _nodes[1];
 			Remove(returnMe);

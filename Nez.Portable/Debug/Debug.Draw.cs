@@ -93,7 +93,17 @@ namespace Nez
 			if (!Core.DebugRenderEnabled)
 				return;
 
-			_debugDrawItems.Add(new DebugDrawItem(rectangle, color, duration));
+			_debugDrawItems.Add(new DebugDrawItem(rectangle, color, duration, false));
+		}
+
+
+		[Conditional("DEBUG")]
+		public static void DrawFilledRect(Rectangle rectangle, Color color, float duration = 0f)
+		{
+			if (!Core.DebugRenderEnabled)
+				return;
+
+			_debugDrawItems.Add(new DebugDrawItem(rectangle, color, duration, true));
 		}
 
 		[Conditional("DEBUG")]
@@ -104,7 +114,7 @@ namespace Nez
 
 			var halfSize = size * 0.5f;
 			_debugDrawItems.Add(new DebugDrawItem(
-				new Rectangle((int)(center.X - halfSize), (int)(center.Y - halfSize), size, size), color, duration));
+				new Rectangle((int)(center.X - halfSize), (int)(center.Y - halfSize), size, size), color, duration, false));
 		}
 
 		[Conditional("DEBUG")]

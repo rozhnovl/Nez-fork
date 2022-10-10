@@ -11,6 +11,7 @@ namespace Nez
 		internal enum DebugDrawType
 		{
 			Line,
+			FilledRectangle,
 			HollowRectangle,
 			Pixel,
 			BitmapFontText,
@@ -51,12 +52,12 @@ namespace Nez
 		}
 
 
-		public DebugDrawItem(Rectangle rectangle, Color color, float duration)
+		public DebugDrawItem(Rectangle rectangle, Color color, float duration, bool fill)
 		{
 			Rectangle = rectangle;
 			Color = color;
 			Duration = duration;
-			drawType = DebugDrawType.HollowRectangle;
+			drawType = fill ? DebugDrawType.FilledRectangle : DebugDrawType.HollowRectangle;
 		}
 
 
@@ -118,6 +119,9 @@ namespace Nez
 				case DebugDrawType.Line:
 					batcher.DrawLine(Start, End, Color);
 					break;
+				case DebugDrawType.FilledRectangle:
+					batcher.DrawRect(Rectangle, Color);
+					break;
 				case DebugDrawType.HollowRectangle:
 					batcher.DrawHollowRect(Rectangle, Color);
 					break;
@@ -151,6 +155,8 @@ namespace Nez
 				case DebugDrawType.Line:
 					return (End - Start).Y;
 				case DebugDrawType.HollowRectangle:
+					return Rectangle.Height;
+				case DebugDrawType.FilledRectangle:
 					return Rectangle.Height;
 				case DebugDrawType.Pixel:
 					return Size;

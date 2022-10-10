@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System.Linq;
 
 
 namespace Nez.UI
@@ -304,8 +305,7 @@ namespace Nez.UI
 			// if we are over an element and the left button was pressed we notify our listener
 			if (over is IInputListener listener)
 			{
-							var elementLocal = over.StageToLocalCoordinates(inputPos);
-				var listener = over as IInputListener;
+				var elementLocal = over.StageToLocalCoordinates(inputPos);
 
 				// add the listener to be notified for all onMouseDown and onMouseUp events
 				if (listener.OnLeftMousePressed(elementLocal))
@@ -316,7 +316,7 @@ namespace Nez.UI
 		void UpdateInputDown(Vector2 elementLocal, IInputListener listener)
 		{
 			// add the listener to be notified for all onMouseDown and onMouseUp events
-			if (listener.OnMousePressed(elementLocal) && listener is Element element)
+			if (listener.OnLeftMousePressed(elementLocal) && listener is Element element)
 				_inputFocusListeners.Add(element);
 		}
 
