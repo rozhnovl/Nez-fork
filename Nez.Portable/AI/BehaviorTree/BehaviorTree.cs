@@ -30,8 +30,7 @@
 
 			UpdatePeriod = _elapsedTime = updatePeriod;
 		}
-
-
+		
 		public void Tick()
 		{
 			// updatePeriod less than or equal to 0 will tick every frame
@@ -43,7 +42,6 @@
 					// ensure we only tick once for long frames
 					while (_elapsedTime <= 0)
 						_elapsedTime += UpdatePeriod;
-
 					_root.Tick(_context);
 				}
 			}

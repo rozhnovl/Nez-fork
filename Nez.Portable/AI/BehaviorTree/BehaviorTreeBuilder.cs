@@ -92,6 +92,17 @@ namespace Nez.AI.BehaviorTrees
 		{
 			return Action(t => func(t) ? TaskStatus.Success : TaskStatus.Failure);
 		}
+		/// <summary>
+		/// Like an action node but the function can return true/false and is mapped to success/failure.
+		/// </summary>
+		public BehaviorTreeBuilder<T> Action(Action<T> func)
+		{
+			return Action(t =>
+			{
+				func(t);
+				return TaskStatus.Success;
+			});
+		}
 
 
 		public BehaviorTreeBuilder<T> Conditional(Func<T, TaskStatus> func)

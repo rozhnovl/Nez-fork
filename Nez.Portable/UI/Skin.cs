@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Nez.BitmapFonts;
 using Nez.Systems;
 using System.Linq;
+using System.Reflection;
 using Nez.Sprites;
 
 
@@ -442,6 +443,15 @@ namespace Nez.UI
 			if (Has<Color>(name))
 			{
 				var color = Get<Color>(name);
+				drawable = new PrimitiveDrawable(color);
+				Add(name, drawable as PrimitiveDrawable);
+				return drawable;
+			}
+
+			var propertyInfo = typeof(Color).GetProperty(name, BindingFlags.Static | BindingFlags.Public);
+			if (propertyInfo!=null)
+			{
+				var color = (Color)propertyInfo.GetValue(null, BindingFlags.Static | BindingFlags.Public, null, null, null);
 				drawable = new PrimitiveDrawable(color);
 				Add(name, drawable as PrimitiveDrawable);
 				return drawable;

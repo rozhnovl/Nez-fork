@@ -17,7 +17,7 @@ namespace Nez
 		public override void OnAddedToEntity()
 		{
 			_collider = Entity.GetComponent<Collider>();
-			Debug.WarnIf(_collider == null, "ProjectileMover has no Collider. ProjectilMover requires a Collider!");
+			Debug.WarnIf(_collider == null, "ProjectileMover has no Collider. ProjectileMover requires a Collider!");
 		}
 
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 
 namespace Nez.AI.Pathfinding
@@ -33,8 +34,8 @@ namespace Nez.AI.Pathfinding
 			frontier.Enqueue(new AStarNode<T>(start), 0);
 
 			costSoFar[start] = 0;
-
-			while (frontier.Count > 0)
+			int i = 0;
+			while (frontier.Count > 0 && i++ < 3000)
 			{
 				var current = frontier.Dequeue();
 
@@ -47,12 +48,16 @@ namespace Nez.AI.Pathfinding
 				foreach (var next in graph.GetNeighbors(current.Data))
 				{
 					var newCost = costSoFar[current.Data] + graph.Cost(current.Data, next);
+					if (newCost > 5000)
+						return false;
 					if (!costSoFar.ContainsKey(next) || newCost < costSoFar[next])
 					{
 						costSoFar[next] = newCost;
 						var priority = newCost + graph.Heuristic(next, goal);
 						frontier.Enqueue(new AStarNode<T>(next), priority);
 						cameFrom[next] = current.Data;
+						if (frontier.Count == frontier.MaxSize)
+							return false;
 					}
 				}
 			}
@@ -74,6 +79,27 @@ namespace Nez.AI.Pathfinding
 			var foundPath = Search(graph, start, goal, out cameFrom);
 
 			return foundPath ? RecontructPath(cameFrom, start, goal) : null;
+		}
+
+
+		/// <summary>
+		/// gets a path from start to goal if possible. If no path is found null is returned.
+		/// </summary>
+		/// <param name="graph">Graph.</param>
+		/// <param name="start">Start.</param>
+		/// <param name="goal">Goal.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public static List<T> SearchIncludeGoalNeighbors<T>(IAstarGraph<T> graph, T start, T goal)
+		{
+			Dictionary<T, T> cameFrom;
+			var foundPath = Search(graph, start, goal, out cameFrom);
+			if (foundPath)
+				return RecontructPath(cameFrom, start, goal);
+			else
+			{
+				var bestGoal = cameFrom.Values.OrderBy(t => graph.Heuristic(t, goal)).FirstOrDefault();
+				return RecontructPath(cameFrom, start, bestGoal);
+			}
 		}
 
 

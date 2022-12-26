@@ -88,13 +88,16 @@
 		/// {@link #pack() Packs} the dialog and adds it to the stage
 		/// </summary>
 		/// <param name="stage">Stage.</param>
-		public Dialog Show(Stage stage)
+		public Dialog Show(Stage stage, bool pack=true)
 		{
 			stage.AddElement(this);
 			SetPosition(Mathf.Round((stage.GetWidth() - GetWidth()) / 2),
 				Mathf.Round((stage.GetHeight() - GetHeight()) / 2));
 
-			Pack();
+			if (pack)
+			{
+				Pack();
+			}
 
 			return this;
 		}

@@ -61,6 +61,11 @@ namespace Nez
 		{
 			return RNG.Next(max);
 		}
+		
+		public static Rectangle NextTileSource(int maxI, int maxJ, int size)
+		{
+			return new Rectangle(NextInt(maxI)*size, NextInt(maxJ)*size, size, size);
+		}
 
 
 		/// <summary>

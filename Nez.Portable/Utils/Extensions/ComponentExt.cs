@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Nez.AI.GOAP;
 
 
 namespace Nez
@@ -9,9 +10,11 @@ namespace Nez
 		#region Entity Component management
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static T AddComponent<T>(this Component self, T component) where T : Component
+		public static T AddComponent<T>(this Component self, T component, System.Action<T> postAddAction = null) where T : Component
 		{
-			return self.Entity.AddComponent(component);
+			var c= self.Entity.AddComponent(component);
+			postAddAction?.Invoke(c);
+			return c;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
