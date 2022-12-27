@@ -766,6 +766,11 @@ namespace Nez.UI
 					parentWidth = stage.GetWidth();
 					parentHeight = stage.GetHeight();
 				}
+				else if (parent is Table tableParent)
+				{
+					parentWidth = tableParent.GetWidth() - tableParent.GetPadX();
+					parentHeight = tableParent.GetHeight()-tableParent.GetPadY();
+				}
 				else
 				{
 					parentWidth = parent.GetWidth();
