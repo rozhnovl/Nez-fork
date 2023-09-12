@@ -21,7 +21,7 @@ namespace Nez.BitmapFonts
 		/// <returns>
 		/// A <see cref="BitmapFont"/> containing the loaded data.
 		/// </returns>
-		public static BitmapFont LoadFontFromFile(string filename, bool premultiplyAlpha = false)
+		public static BitmapFont LoadFontFromFile(string filename, bool premultiplyAlpha = false, bool invertAlpha = false)
 		{
 			using (var file = TitleContainer.OpenStream(filename))
 			{
@@ -29,9 +29,9 @@ namespace Nez.BitmapFonts
 				{
 					var line = reader.ReadLine();
 					if (line.StartsWith("info "))
-						return LoadFontFromTextFile(filename, premultiplyAlpha);
+						return LoadFontFromTextFile(filename, premultiplyAlpha, invertAlpha);
 					else if (line.StartsWith("<?xml") || line.StartsWith("<font"))
-						return LoadFontFromXmlFile(filename, premultiplyAlpha);
+						return LoadFontFromXmlFile(filename, premultiplyAlpha, invertAlpha);
 					else
 						throw new InvalidDataException("Unknown file format.");
 				}
@@ -47,14 +47,14 @@ namespace Nez.BitmapFonts
 		/// <returns>
 		/// A <see cref="BitmapFont"/> containing the loaded data.
 		/// </returns>
-		public static BitmapFont LoadFontFromTextFile(string filename, bool premultiplyAlpha = false)
+		public static BitmapFont LoadFontFromTextFile(string filename, bool premultiplyAlpha = false, bool invertAlpha = false)
 		{
 			var font = new BitmapFont();
 			using (var stream = TitleContainer.OpenStream(filename))
 				font.LoadText(stream);
 
 			QualifyResourcePaths(font, Path.GetDirectoryName(filename));
-			font.Initialize(premultiplyAlpha);
+			font.Initialize(premultiplyAlpha, invertAlpha);
 
 			return font;
 		}
@@ -68,14 +68,14 @@ namespace Nez.BitmapFonts
 		/// <returns>
 		/// A <see cref="BitmapFont"/> containing the loaded data.
 		/// </returns>
-		public static BitmapFont LoadFontFromXmlFile(string filename, bool premultiplyAlpha = false)
+		public static BitmapFont LoadFontFromXmlFile(string filename, bool premultiplyAlpha = false, bool invertAlpha = false)
 		{
 			var font = new BitmapFont();
 			using (var stream = TitleContainer.OpenStream(filename))
 				font.LoadXml(stream);
 
 			QualifyResourcePaths(font, Path.GetDirectoryName(filename));
-			font.Initialize(premultiplyAlpha);
+			font.Initialize(premultiplyAlpha, invertAlpha);
 
 			return font;
 		}

@@ -47,6 +47,20 @@ namespace Nez.Textures
 
 			return texture;
 		}
+		/// <summary>
+		/// loads a Texture2D and premultiplies the alpha
+		/// </summary>
+		public static Texture2D TextureFromStreamInverted(Stream stream)
+		{
+			var texture = Texture2D.FromStream(Core.GraphicsDevice, stream);
+
+			var pixels = new byte[texture.Width * texture.Height * 4];
+			texture.GetData(pixels);
+			InvertAlpha(pixels);
+			texture.SetData(pixels);
+
+			return texture;
+		}
 #endif
 
 		static unsafe void PremultiplyAlpha(byte[] pixels)
@@ -61,6 +75,23 @@ namespace Nez.Textures
 						b[i + 0] = (byte)(b[i + 0] * alpha);
 						b[i + 1] = (byte)(b[i + 1] * alpha);
 						b[i + 2] = (byte)(b[i + 2] * alpha);
+					}
+				}
+			}
+		}
+		static unsafe void InvertAlpha(byte[] pixels)
+		{
+			fixed (byte* b = &pixels[0])
+			{
+				for (var i = 0; i < pixels.Length; i += 4)
+				{
+					if (b[i + 0] != 255 && b[i+3] == 255)
+					{
+						var alpha = b[i + 0];
+						b[i + 0] = alpha;
+						b[i + 1] = alpha;
+						b[i + 2] = alpha;
+						b[i + 3] = b[i + 0]; 
 					}
 				}
 			}

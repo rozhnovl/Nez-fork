@@ -9,10 +9,10 @@ namespace Nez.BitmapFonts
 {
 	public partial class BitmapFont : IDisposable, IFont
 	{
-        /// <summary>
-        /// When used with MeasureString, specifies that no wrapping should occur.
-        /// </summary>
-        const int kNoMaxWidth = -1;
+		/// <summary>
+		/// When used with MeasureString, specifies that no wrapping should occur.
+		/// </summary>
+		const int kNoMaxWidth = -1;
 
 		#region Properties
 
@@ -147,11 +147,24 @@ namespace Nez.BitmapFonts
 		/// <summary>
 		/// Index to get items within thsi collection using array index syntax.
 		/// </summary>
-		public Character this[char character] => Characters[character];
+		public Character this[char character] {
+			get { 
+				try { 
+					return Characters[character];
+				}
+				catch (Exception e) 
+				{
+					var defaultFont = Core.Content.Load<BitmapFont>("nez://Nez.Content.NezDefaultBMFont.xnb");
+					if (this.FamilyName !=defaultFont.FamilyName)
+						return defaultFont[character];
+					return this['x'];
+				}
+			}
+		}
 
-		public void Initialize(bool premultiplyAlpha)
+		public void Initialize(bool premultiplyAlpha, bool invertAlpha)
 		{
-			LoadTextures(premultiplyAlpha);
+			LoadTextures(premultiplyAlpha, invertAlpha);
 			if (Characters.TryGetValue(' ', out var defaultChar))
 			{
 				DefaultCharacter = defaultChar;

@@ -879,7 +879,10 @@ namespace Nez.UI
 
 		public IInputListener Hit(Vector2 position)
 		{
-			if (rc?.Bounds.Contains(position) ?? false)
+			if (this.Entity.Scene.FindEntity("dialog") != null)
+				return null;
+			var worldPosition = this.Entity.Scene.Camera.ScreenToWorldPoint(position);
+			if (rc?.Bounds.Contains(worldPosition) ?? false)
 				return InputListener;
 			return null;
 		}

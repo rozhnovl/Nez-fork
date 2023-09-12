@@ -313,13 +313,15 @@ namespace Nez.BitmapFonts
 			Kernings = kerningDictionary;
 		}
 
-		void LoadTextures(bool premultiplyAlpha)
+		void LoadTextures(bool premultiplyAlpha, bool invertAlpha)
 		{
 			Textures = new Texture2D[Pages.Length];
 			for (var i = 0; i < Textures.Length; i++)
 			{
 				using (var stream = TitleContainer.OpenStream(Pages[i].Filename))
-					Textures[i] = premultiplyAlpha ? TextureUtils.TextureFromStreamPreMultiplied(stream) : Texture2D.FromStream(Core.GraphicsDevice, stream);
+					Textures[i] = premultiplyAlpha ? TextureUtils.TextureFromStreamPreMultiplied(stream) :
+						invertAlpha ? TextureUtils.TextureFromStreamInverted(stream)
+						: Texture2D.FromStream(Core.GraphicsDevice, stream);
 			}
 		}
 	}

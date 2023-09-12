@@ -218,6 +218,7 @@ namespace Nez.UI
 			labelStyle.FontColor = style.TitleFontColor;
 			labelStyle.FontScaleX = style.TitleFontScaleX;
 			labelStyle.FontScaleY = style.TitleFontScaleY;
+			labelStyle.Background = style.TitleBackground;
 			titleLabel.SetStyle(labelStyle);
 
 			InvalidateHierarchy();
@@ -372,6 +373,9 @@ namespace Nez.UI
 
 		/** Optional. */
 		public IDrawable Background;
+
+		/** Optional. */
+		public IDrawable TitleBackground;
 
 		/** Optional. */
 		public Color TitleFontColor = Color.White;
