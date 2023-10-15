@@ -35,7 +35,7 @@ namespace Nez.AI.Pathfinding
 
 			costSoFar[start] = 0;
 			int i = 0;
-			while (frontier.Count > 0 && i++ < 3000)
+			while (frontier.Count > 0 && i++ < 1000)
 			{
 				var current = frontier.Dequeue();
 
