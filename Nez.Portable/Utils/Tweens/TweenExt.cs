@@ -1,6 +1,6 @@
 ﻿using Nez.Tweens;
 using Microsoft.Xna.Framework;
-
+using System.Linq;
 
 namespace Nez
 {
@@ -152,6 +152,23 @@ namespace Nez
 			var tween = Pool<TransformVector2Tween>.Obtain();
 			tween.SetTargetAndType(self.Transform, TransformTargetType.Position);
 			tween.Initialize(tween, to, duration);
+
+			return tween;
+		}
+
+		/// <summary>
+		/// transform.position tween
+		/// </summary>
+		/// <returns>The kposition to.</returns>
+		/// <param name="self">Self.</param>
+		/// <param name="to">To.</param>
+		/// <param name="duration">Duration.</param>
+		public static ITween<Vector2> TweenPositionBezierTo(this Entity self, Vector2[] to, float duration = 0.3f)
+		{
+			//TODO pool
+			var tween = new TransformVector2BezierTween(new[] { self.Transform.Position }.Concat(to).ToArray());
+			tween.SetTargetAndType(self.Transform, TransformTargetType.Position);
+			tween.Initialize(tween, to.Last(), duration);
 
 			return tween;
 		}

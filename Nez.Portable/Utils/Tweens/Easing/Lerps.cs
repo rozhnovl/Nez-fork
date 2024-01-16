@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-
+using System;
 
 namespace Nez.Tweens
 {
@@ -156,6 +156,40 @@ namespace Nez.Tweens
 		public static Vector2 Ease(EaseType easeType, Vector2 from, Vector2 to, float t, float duration)
 		{
 			return Lerp(from, to, EaseHelper.Ease(easeType, t, duration));
+		}
+
+		public static Vector2 EaseBezier(Vector2[] trajectory, float currPercent)
+		{
+			int n = trajectory.Length - 1; // Degree of the curve
+			Vector2 result = Vector2.Zero;
+
+			for (int i = 0; i <= n; i++)
+			{
+				result += BinomialCoefficient(n, i) * Mathf.Pow(1 - currPercent, n - i) * Mathf.Pow(currPercent, i) * trajectory[i];
+			}
+
+			return result;
+		}
+		
+		// Helper function to calculate binomial coefficient
+		private static int BinomialCoefficient(int n, int k)
+		{
+			if (k < 0 || k > n) return 0;
+			if (k == 0 || k == n) return 1;
+
+			int coefficient = 1;
+
+			// Optimization to reduce number of multiplications
+			if (k > n - k)
+				k = n - k;
+
+			for (int i = 1; i <= k; i++)
+			{
+				coefficient *= (n - (k - i));
+				coefficient /= i;
+			}
+
+			return coefficient;
 		}
 
 
